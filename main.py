@@ -4,6 +4,8 @@ import mysql.connector
 def conectar():
     return mysql.connector.connect(
         host="localhost",
+        
+        # Colocar o user e a password conforme foram configurados aquando da instalação do MySQL Workbench
         user="root",
         password="root",
         database="loja"
