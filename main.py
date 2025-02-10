@@ -7,9 +7,11 @@ def conectar():
         return mysql.connector.connect(
             host="localhost",
         
-             # Colocar o user e a password conforme foram configurados aquando da instalação do MySQL Workbench
+            # Colocar o user e a password conforme foram configurados aquando da instalação do MySQL Workbench
             user="root",
             password="root",
+            
+            # Colocar o nome da base de dados
             database="loja"
     )
     except mysql.connector.Error as erro:
@@ -122,7 +124,7 @@ def menu_principal():
         print("1. Gestão de Produtos")
         print("2. Gestão de Pedidos")
         print("3. Gestão de Clientes")
-        print("4. Sair")
+        print("4. Sair do programa")
         
         opcao = input("Escolha uma opção: ")
         
@@ -147,7 +149,7 @@ def menu_produtos():
         print("2. Listar produtos")
         print("3. Atualizar produto")
         print("4. Remover produto")
-        print("5. Voltar ao menu principal")
+        print("5. Voltar ao Menu Principal")
         
         opcao = input("Escolha uma opção: ")
         
@@ -186,7 +188,7 @@ def menu_pedidos():
         print("1. Processar novo pedido")
         print("2. Listar pedidos")
         print("3. Atualizar estado do pedido")
-        print("4. Voltar ao menu principal")
+        print("4. Voltar ao Menu Principal")
         
         opcao = input("Escolha uma opção: ")
         
@@ -225,7 +227,7 @@ def menu_clientes():
         print("2. Listar clientes")
         print("3. Atualizar cliente")
         print("4. Remover cliente")
-        print("5. Voltar ao menu principal")
+        print("5. Voltar ao Menu Principal")
         
         opcao = input("Escolha uma opção: ")
         
