@@ -1,16 +1,22 @@
 # Instalar pip install mysql-connector-python
 import mysql.connector
 
+# Conexão com a base de dados em MySQL Workbench
 def conectar():
-    return mysql.connector.connect(
-        host="localhost",
+    try:
+        return mysql.connector.connect(
+            host="localhost",
         
-        # Colocar o user e a password conforme foram configurados aquando da instalação do MySQL Workbench
-        user="root",
-        password="root",
-        database="loja"
+             # Colocar o user e a password conforme foram configurados aquando da instalação do MySQL Workbench
+            user="root",
+            password="root",
+            database="loja"
     )
+    except mysql.connector.Error as erro:
+        print("Erro ao conectar com a base de dados em MySQL Workbench:", erro)
+        return None
     
+# Funções para a Gestão de Produtos    
 def registar_produto(nome, descricao, preco, categoria):
     conexao = conectar()
     cursor = conexao.cursor()
@@ -28,8 +34,24 @@ def listar_produtos():
     conexao.close()
     return produtos
 
-# Adicionar funções para atualizar e remover produtos
+def atualizar_produto(produto_id, nome, descricao, preco, categoria):
+    conexao = conectar()
+    cursor = conexao.cursor()
+    cursor.execute("UPDATE produtos SET nome = %s, descricao = %s, preco = %s, categoria = %s WHERE id = %s", 
+                   (nome, descricao, preco, categoria, produto_id))
+    conexao.commit()
+    cursor.close()
+    conexao.close()
 
+def remover_produto(produto_id):
+    conexao = conectar()
+    cursor = conexao.cursor()
+    cursor.execute("DELETE FROM produtos WHERE id = %s", (produto_id,))
+    conexao.commit()
+    cursor.close()
+    conexao.close()
+
+# Funções para a Gestão de Pedidos
 def processar_pedido(cliente_id, itens):
     conexao = conectar()
     cursor = conexao.cursor()
@@ -50,8 +72,15 @@ def listar_pedidos():
     conexao.close()
     return pedidos
 
-# Adicionar funções para atualizar o estado dos pedidos e consultar o histórico
+def atualizar_estado_pedido(pedido_id, estado):
+    conexao = conectar()
+    cursor = conexao.cursor()
+    cursor.execute("UPDATE pedidos SET estado = %s WHERE id = %s", (estado, pedido_id))
+    conexao.commit()
+    cursor.close()
+    conexao.close()
 
+# Funções para a Gestão de Clientes
 def registar_cliente(nome, email, telefone, endereco):
     conexao = conectar()
     cursor = conexao.cursor()
@@ -69,8 +98,24 @@ def listar_clientes():
     conexao.close()
     return clientes
 
-# Adicionar funções para atualizar e remover clientes
+def atualizar_cliente(cliente_id, nome, email, telefone, endereco):
+    conexao = conectar()
+    cursor = conexao.cursor()
+    cursor.execute("UPDATE clientes SET nome = %s, email = %s, telefone = %s, endereco = %s WHERE id = %s", 
+                   (nome, email, telefone, endereco, cliente_id))
+    conexao.commit()
+    cursor.close()
+    conexao.close()
 
+def remover_cliente(cliente_id):
+    conexao = conectar()
+    cursor = conexao.cursor()
+    cursor.execute("DELETE FROM clientes WHERE id = %s", (cliente_id,))
+    conexao.commit()
+    cursor.close()
+    conexao.close()
+
+# Menu Principal
 def menu_principal():
     while True:
         print("\nMenu Principal")
@@ -88,17 +133,21 @@ def menu_principal():
         elif opcao == '3':
             menu_clientes()
         elif opcao == '4':
-            print("Saindo...")
+            print("Programa encerrado.")
             break
         else:
             print("Opção inválida. Tente novamente.")
-
+            
+            
+# Menu de Gestão de Produtos
 def menu_produtos():
     while True:
         print("\nGestão de Produtos")
         print("1. Registar novo produto")
         print("2. Listar produtos")
-        print("3. Voltar ao menu principal")
+        print("3. Atualizar produto")
+        print("4. Remover produto")
+        print("5. Voltar ao menu principal")
         
         opcao = input("Escolha uma opção: ")
         
@@ -114,16 +163,30 @@ def menu_produtos():
             for produto in produtos:
                 print(produto)
         elif opcao == '3':
+            produto_id = int(input("ID do produto: "))
+            nome = input("Nome do produto: ")
+            descricao = input("Descrição do produto: ")
+            preco = float(input("Preço do produto: "))
+            categoria = input("Categoria do produto: ")
+            atualizar_produto(produto_id, nome, descricao, preco, categoria)
+            print("Produto atualizado com sucesso!")
+        elif opcao == '4':
+            produto_id = int(input("ID do produto: "))
+            remover_produto(produto_id)
+            print("Produto removido com sucesso!")
+        elif opcao == '5':
             break
         else:
             print("Opção inválida. Tente novamente.")
 
+# Menu de Gestão de Pedidos
 def menu_pedidos():
     while True:
         print("\nGestão de Pedidos")
         print("1. Processar novo pedido")
         print("2. Listar pedidos")
-        print("3. Voltar ao menu principal")
+        print("3. Atualizar estado do pedido")
+        print("4. Voltar ao menu principal")
         
         opcao = input("Escolha uma opção: ")
         
@@ -145,16 +208,24 @@ def menu_pedidos():
             for pedido in pedidos:
                 print(pedido)
         elif opcao == '3':
+            pedido_id = int(input("ID do pedido: "))
+            estado = input("Estado do pedido: ")
+            atualizar_estado_pedido(pedido_id, estado)
+            print("Estado do pedido atualizado com sucesso!")
+        elif opcao == '4':
             break
         else:
             print("Opção inválida. Tente novamente.")
-
+            
+# Menu de Gestão de Clientes
 def menu_clientes():
     while True:
         print("\nGestão de Clientes")
         print("1. Registar novo cliente")
         print("2. Listar clientes")
-        print("3. Voltar ao menu principal")
+        print("3. Atualizar cliente")
+        print("4. Remover cliente")
+        print("5. Voltar ao menu principal")
         
         opcao = input("Escolha uma opção: ")
         
@@ -170,8 +241,20 @@ def menu_clientes():
             for cliente in clientes:
                 print(cliente)
         elif opcao == '3':
+                cliente_id = int(input("ID do cliente: "))
+                nome = input("Nome do cliente: ")
+                email = input("Email do cliente: ")
+                telefone = input("Telefone do cliente: ")
+                endereco = input("Endereço do cliente: ")
+                atualizar_cliente(cliente_id, nome, email, telefone, endereco)
+                print("Cliente atualizado com sucesso!")
+        elif opcao == '4':
+            cliente_id = int(input("ID do cliente: "))
+            remover_cliente(cliente_id)
+            print("Cliente removido com sucesso!")
+        elif opcao == '5':
             break
         else:
             print("Opção inválida. Tente novamente.")
 
-menu_principal() #Voltar ao menu principal
+menu_principal()
